@@ -1,0 +1,81 @@
+<footer class="footer">
+  <div class="footer__rule" aria-hidden="true">
+    <span class="greek-key"></span>
+    <picture>
+      <source type="image/webp" [attr.srcset]="flame.srcWebp" />
+      <img [src]="flame.src" [width]="flame.width" [height]="flame.height" alt="" loading="lazy" />
+    </picture>
+    <span class="greek-key"></span>
+  </div>
+
+  <div class="footer__grid container">
+    <div class="footer__brand">
+      <a routerLink="/" aria-label="Fotia home">
+        <picture>
+          <source type="image/webp" [attr.srcset]="logo.srcsetWebp" sizes="140px" />
+          <img
+            [src]="logo.src"
+            [attr.srcset]="logo.srcsetPng"
+            sizes="140px"
+            [width]="logo.width"
+            [height]="logo.height"
+            alt=""
+            loading="lazy"
+          />
+        </picture>
+      </a>
+      <p class="footer__tagline">Fire of the Gods.</p>
+    </div>
+
+    <nav aria-labelledby="footer-explore">
+      <h2 id="footer-explore" class="footer__heading">Explore</h2>
+      <ul role="list" class="footer__links">
+        @for (item of nav; track item.path) {
+          <li><a [routerLink]="item.path">{{ item.label }}</a></li>
+        }
+      </ul>
+    </nav>
+
+    <section class="footer__coa" aria-labelledby="footer-coa">
+      <h2 id="footer-coa" class="footer__heading">Lab results</h2>
+      <p>Find the certificate of analysis for the batch in your hand.</p>
+      <a class="btn btn--sm" routerLink="/lab-results">
+        Find your COA
+        <app-icon name="arrow-right" [size]="16" />
+      </a>
+    </section>
+
+    @if (hasContact) {
+      <section aria-labelledby="footer-contact">
+        <h2 id="footer-contact" class="footer__heading">Contact</h2>
+        <ul role="list" class="footer__links">
+          @if (config.contact.email; as email) {
+            <li><a [href]="'mailto:' + email">{{ email }}</a></li>
+          }
+          @if (config.contact.phone; as phone) {
+            <li><a [href]="'tel:' + phone">{{ phone }}</a></li>
+          }
+          @for (link of config.social; track link.url) {
+            <li><a [href]="link.url" target="_blank" rel="noopener">{{ link.label }}</a></li>
+          }
+        </ul>
+      </section>
+    }
+  </div>
+
+  <div class="footer__legal container">
+    @for (notice of config.legal.notices; track $index) {
+      <p>{{ notice }}</p>
+    }
+    <div class="footer__legal-row">
+      <p>© {{ year }} Fotia</p>
+      @if (config.legal.links.length) {
+        <ul role="list">
+          @for (link of config.legal.links; track link.url) {
+            <li><a [href]="link.url">{{ link.label }}</a></li>
+          }
+        </ul>
+      }
+    </div>
+  </div>
+</footer>

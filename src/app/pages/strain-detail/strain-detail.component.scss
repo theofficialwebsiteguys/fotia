@@ -1,0 +1,136 @@
+@use 'breakpoints' as bp;
+
+:host {
+  display: block;
+}
+
+.detail {
+  padding-top: calc(var(--header-h) + 1.5rem);
+  padding-bottom: var(--section-space);
+}
+
+.crumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+
+  li + li::before {
+    content: '/';
+    margin-right: 0.5rem;
+    color: var(--color-text-subtle);
+  }
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    color: var(--color-gold);
+  }
+
+  [aria-current] {
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+.detail__top {
+  display: grid;
+  gap: 2rem clamp(2rem, 5vw, 4.5rem);
+  margin-top: 1rem;
+
+  @include bp.up(md) {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr);
+    align-items: center;
+  }
+}
+
+.detail__photo {
+  border: 1px solid rgb(217 183 95 / 0.16);
+  border-radius: var(--radius);
+}
+
+.detail__info {
+  display: grid;
+  gap: 1.25rem;
+
+  .eyebrow {
+    margin-bottom: -0.25rem;
+  }
+}
+
+.detail__title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+}
+
+.detail__actions,
+.not-found-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.not-found-actions {
+  margin-top: 2rem;
+}
+
+.detail__section {
+  margin-top: clamp(4rem, 8vw, 6rem);
+  outline: none;
+}
+
+.section-intro {
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: 1.75rem;
+}
+
+.lab {
+  display: grid;
+  gap: 2rem 4rem;
+
+  @include bp.up(md) {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+
+.lab__batch,
+.lab__results {
+  display: grid;
+  gap: 1.5rem;
+  align-content: start;
+}
+
+.lab__note {
+  color: var(--color-text-subtle);
+  font-size: 0.875rem;
+}
+
+.availability {
+  display: grid;
+  justify-items: start;
+  gap: 1rem;
+  max-width: 48rem;
+}
+
+.metric {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+.metric__value {
+  color: var(--color-gold);
+  font-family: var(--font-serif);
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.metric__label {
+  color: var(--color-text-muted);
+}

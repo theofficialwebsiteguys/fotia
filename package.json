@@ -7,7 +7,9 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:fotia": "node dist/fotia/server/server.mjs"
+    "serve:ssr:fotia": "node dist/fotia/server/server.mjs",
+    "build:ghpages": "ng build --configuration=production --base-href=/fotia/ && node -e \"require('fs').copyFileSync('dist/fotia/browser/index.csr.html', 'dist/fotia/browser/404.html')\"",
+    "deploy:ghpages": "npm run build:ghpages && npx angular-cli-ghpages --dir=dist/fotia/browser --no-notfound"
   },
   "private": true,
   "dependencies": {
@@ -33,6 +35,7 @@
     "@types/express": "^4.17.17",
     "@types/jasmine": "~5.1.0",
     "@types/node": "^18.18.0",
+    "angular-cli-ghpages": "^3.1.2",
     "jasmine-core": "~5.5.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",

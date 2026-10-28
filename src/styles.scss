@@ -1,1 +1,8 @@
-/* You can add global styles to this file, and also import other style files */
+// Global styles. Design tokens and shared primitives live in src/styles/.
+@use 'styles/tokens';
+@use 'styles/base';
+@use 'styles/typography';
+@use 'styles/layout';
+@use 'styles/buttons';
+@use 'styles/forms';
+@use 'styles/utilities';

@@ -1,0 +1,68 @@
+<header class="header" [class.is-scrolled]="scrolled()">
+  <div class="header__bar container">
+    <a class="header__logo" routerLink="/" aria-label="Fotia home">
+      <picture>
+        <source type="image/webp" [attr.srcset]="logo.srcsetWebp" sizes="(min-width: 860px) 126px, 80px" />
+        <img
+          [src]="logo.src"
+          [attr.srcset]="logo.srcsetPng"
+          sizes="(min-width: 860px) 126px, 80px"
+          [width]="logo.width"
+          [height]="logo.height"
+          alt=""
+        />
+      </picture>
+    </a>
+
+    <nav class="header__nav" aria-label="Primary">
+      <ul role="list">
+        @for (item of nav; track item.path) {
+          <li>
+            <a [routerLink]="item.path" routerLinkActive="is-active" ariaCurrentWhenActive="page">{{ item.label }}</a>
+          </li>
+        }
+      </ul>
+    </nav>
+
+    <button
+      type="button"
+      class="header__toggle"
+      aria-haspopup="dialog"
+      aria-controls="site-menu"
+      [attr.aria-expanded]="menuOpen()"
+      (click)="openMenu()"
+    >
+      <app-icon name="menu" [size]="22" />
+      <span>Menu</span>
+    </button>
+  </div>
+
+  <dialog #menu id="site-menu" class="menu" aria-label="Site menu" (close)="onMenuClosed()">
+    <div class="menu__bar container">
+      <a class="header__logo" routerLink="/" aria-label="Fotia home" (click)="closeMenu()">
+        <picture>
+          <source type="image/webp" [attr.srcset]="logo.srcsetWebp" sizes="80px" />
+          <img [src]="logo.src" [attr.srcset]="logo.srcsetPng" sizes="80px" [width]="logo.width" [height]="logo.height" alt="" />
+        </picture>
+      </a>
+      <button type="button" class="header__toggle" autofocus (click)="closeMenu()">
+        <app-icon name="close" [size]="22" />
+        <span>Close</span>
+      </button>
+    </div>
+
+    <nav class="menu__nav container" aria-label="Site menu">
+      <ul role="list">
+        @for (item of nav; track item.path) {
+          <li>
+            <a [routerLink]="item.path" routerLinkActive="is-active" ariaCurrentWhenActive="page" (click)="closeMenu()">
+              {{ item.label }}
+            </a>
+          </li>
+        }
+      </ul>
+    </nav>
+
+    <p class="menu__tagline container">Fire of the Gods.</p>
+  </dialog>
+</header>

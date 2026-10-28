@@ -1,0 +1,85 @@
+@use 'breakpoints' as bp;
+
+:host {
+  display: block;
+}
+
+.finder {
+  display: grid;
+  gap: 2.5rem;
+  padding-bottom: var(--section-space);
+}
+
+.finder__form {
+  display: grid;
+  gap: 1rem 1.25rem;
+  align-items: end;
+
+  @include bp.up(md) {
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr) auto;
+  }
+
+  > .btn {
+    min-height: 3.25rem;
+  }
+}
+
+.finder__geo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 1rem;
+  grid-column: 1 / -1;
+
+  .text-link[disabled] {
+    color: var(--color-text-subtle);
+    text-decoration-color: transparent;
+    cursor: not-allowed;
+  }
+
+  [role='status']:empty {
+    display: none;
+  }
+}
+
+.finder__layout.has-map {
+  @include bp.up(lg) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 2rem;
+  }
+}
+
+.finder__map {
+  min-height: 24rem;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+}
+
+.finder__count {
+  margin-bottom: 1.5rem;
+  font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+}
+
+.finder__list {
+  display: grid;
+  gap: 1rem;
+}
+
+.finder__skeleton {
+  height: 11rem;
+}
+
+.setup {
+  max-width: 46rem;
+
+  strong {
+    color: var(--color-text);
+  }
+}
+
+.setup__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1.5rem;
+}

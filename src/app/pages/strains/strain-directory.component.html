@@ -1,0 +1,86 @@
+<header class="page-intro container">
+  <p class="eyebrow">Strains</p>
+  <h1 class="title-page">The flower.</h1>
+  <p class="lead">Explore every Fotia strain. Each one links to where you can find it and to the lab results for its batches.</p>
+</header>
+
+<div class="container directory">
+  @if (hasDemo()) {
+    <p class="notice">
+      <strong>Demo content.</strong> These strains are placeholders until approved strain details, photos and lab
+      results are supplied.
+    </p>
+  }
+
+  <form class="toolbar" role="search" (submit)="$event.preventDefault()">
+    <div class="field toolbar__search">
+      <label class="field__label" for="strain-search">Search strains</label>
+      <div class="input-wrap">
+        <input
+          id="strain-search"
+          class="input"
+          type="search"
+          name="q"
+          placeholder="Strain name"
+          autocomplete="off"
+          [value]="query()"
+          (input)="onQueryInput($any($event.target).value)"
+        />
+        <app-icon name="search" />
+      </div>
+    </div>
+    @if (types().length > 1) {
+      <div class="field toolbar__type">
+        <label class="field__label" for="strain-type">Type</label>
+        <select id="strain-type" class="select" (change)="onTypeChange($any($event.target).value)">
+          <option value="" [selected]="!type()" [attr.selected]="!type() ? '' : null">All types</option>
+          @for (option of types(); track option) {
+            <option [value]="option" [selected]="option === type()" [attr.selected]="option === type() ? '' : null">{{ option }}</option>
+          }
+        </select>
+      </div>
+    }
+  </form>
+
+  @let state = catalog();
+  @if (state.status === 'loading') {
+    <p class="visually-hidden" role="status">Loading strains…</p>
+    <div class="card-grid" aria-hidden="true">
+      @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+        <div class="skeleton skeleton-card"></div>
+      }
+    </div>
+  } @else if (state.status === 'error') {
+    <div class="state-block">
+      <h2>Strains couldn’t be loaded.</h2>
+      <p>Please refresh the page or try again in a moment.</p>
+    </div>
+  } @else {
+    <p class="count" role="status">
+      @if (filtered()) {
+        Showing {{ results().length }} of {{ strains().length }} strains
+      } @else {
+        {{ strains().length }} {{ strains().length === 1 ? 'strain' : 'strains' }}
+      }
+    </p>
+
+    @if (results().length) {
+      <ul role="list" class="card-grid">
+        @for (strain of results(); track strain.slug) {
+          <li><app-strain-card [strain]="strain" [headingLevel]="2" /></li>
+        }
+      </ul>
+    } @else if (strains().length) {
+      <div class="state-block">
+        <h2>No strains match “{{ query() || type() }}”.</h2>
+        <p>Check the spelling, or clear the search to see every strain.</p>
+        <button type="button" class="btn btn--sm" (click)="clearFilters()">Clear search</button>
+      </div>
+    } @else {
+      <div class="state-block">
+        <h2>Strains are coming soon.</h2>
+        <p>Check back shortly for the full Fotia lineup.</p>
+      </div>
+    }
+  }
+</div>

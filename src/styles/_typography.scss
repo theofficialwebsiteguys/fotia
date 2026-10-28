@@ -1,0 +1,63 @@
+@use 'breakpoints' as bp;
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+// Hero headline.
+.display {
+  font-family: var(--font-serif);
+  font-size: clamp(2.75rem, 14vw, 5rem);
+  font-weight: 600;
+  line-height: 0.92;
+  letter-spacing: -0.015em;
+  text-transform: uppercase;
+
+  @include bp.up(md) {
+    font-size: clamp(4.25rem, 8.4vw, 8.25rem);
+  }
+}
+
+.title-page {
+  font-size: clamp(2.75rem, 1.5rem + 4.4vw, 5.5rem);
+}
+
+.title-section {
+  font-size: clamp(2.75rem, 1.25rem + 4.6vw, 5.75rem);
+}
+
+.title-sub {
+  font-size: clamp(2rem, 1.35rem + 2.2vw, 3.5rem);
+}
+
+.eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+}
+
+.lead {
+  max-width: 38rem;
+  color: var(--color-text-muted);
+  font-size: clamp(1.0625rem, 1rem + 0.35vw, 1.3125rem);
+  line-height: 1.55;
+}
+
+.muted {
+  color: var(--color-text-muted);
+}
+
+.batch-id {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+}

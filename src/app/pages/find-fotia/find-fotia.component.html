@@ -1,0 +1,147 @@
+<header class="page-intro container">
+  <p class="eyebrow">Find Fotia</p>
+  <h1 class="title-page">Find Fotia near you.</h1>
+  <p class="lead">Search by city or ZIP code, and narrow it to a strain if you have one in mind.</p>
+</header>
+
+<div class="container finder">
+  <form
+    class="finder__form panel"
+    action="find-fotia"
+    method="get"
+    role="search"
+    (submit)="submit($event, location.value, strain.value)"
+  >
+    <div class="field">
+      <label class="field__label" for="finder-location">City or ZIP code</label>
+      <div class="input-wrap">
+        <input
+          #location
+          id="finder-location"
+          name="location"
+          class="input"
+          type="text"
+          placeholder="Enter a city or ZIP code"
+          [value]="params().location"
+        />
+        <app-icon name="location" />
+      </div>
+    </div>
+    <div class="field">
+      <label class="field__label" for="finder-strain">Strain</label>
+      <select #strain id="finder-strain" name="strain" class="select" (change)="onStrainChange(strain.value)">
+        <option value="" [selected]="!params().strain" [attr.selected]="!params().strain ? '' : null">All strains</option>
+        @for (s of strains(); track s.slug) {
+          <option [value]="s.slug" [selected]="s.slug === params().strain" [attr.selected]="s.slug === params().strain ? '' : null">{{ s.name }}</option>
+        }
+      </select>
+    </div>
+    <button class="btn btn--primary" type="submit">
+      Find Fotia
+      <app-icon name="arrow-right" />
+    </button>
+
+    <div class="finder__geo">
+      <button
+        type="button"
+        class="text-link"
+        [disabled]="!capabilities.coordinateSearch || locating()"
+        [attr.aria-describedby]="capabilities.coordinateSearch ? null : 'geo-note'"
+        (click)="useMyLocation()"
+      >
+        <app-icon name="location" [size]="16" />
+        {{ locating() ? 'Finding your location…' : 'Use my location' }}
+      </button>
+      @if (!capabilities.coordinateSearch) {
+        <p id="geo-note" class="field__hint">Available once retailer listings are connected.</p>
+      }
+      <p class="field__hint" role="status">{{ geoMessage() }}</p>
+    </div>
+  </form>
+
+  <div class="finder__layout" [class.has-map]="!!mapProvider">
+    <section class="finder__results" aria-labelledby="results-title" [attr.aria-busy]="search().status === 'loading'">
+      @let view = search();
+      @if (view.status === 'idle') {
+        <div class="state-block">
+          <h2 id="results-title">Start with a location.</h2>
+          <p>Enter a city or ZIP code to see retailers that carry Fotia.</p>
+        </div>
+      } @else if (view.status === 'loading') {
+        <h2 id="results-title" class="visually-hidden">Searching retailers</h2>
+        <ul role="list" class="finder__list" aria-hidden="true">
+          @for (i of [1, 2, 3]; track i) {
+            <li class="skeleton finder__skeleton"></li>
+          }
+        </ul>
+      } @else {
+        @switch (view.result.kind) {
+          @case ('not-connected') {
+            <div class="state-block panel setup">
+              <p class="eyebrow">Coming soon</p>
+              <h2 id="results-title">Retailer listings aren’t connected yet.</h2>
+              <p>
+                We’re adding verified retailers. Once they’re live, this page will list the stores that carry Fotia,
+                with directions and the strains each one reports.
+              </p>
+              @if (view.query.location) {
+                <p>
+                  We can’t show results for <strong>“{{ view.query.location }}”</strong> yet. The link to this page keeps
+                  your search, so you can share it or check back.
+                </p>
+              }
+              @if (selectedStrain(); as s) {
+                <p>
+                  You’re looking for <strong>{{ s.name }}</strong>. Until listings are live, ask your local licensed
+                  retailer for it by name.
+                </p>
+              }
+              <div class="setup__links">
+                <a class="text-link" routerLink="/strains">Explore strains <app-icon name="arrow-right" [size]="16" /></a>
+                <a class="text-link" routerLink="/lab-results">View lab results <app-icon name="arrow-right" [size]="16" /></a>
+              </div>
+            </div>
+          }
+          @case ('error') {
+            <div class="state-block" role="alert">
+              <h2 id="results-title">Retailer listings are temporarily unavailable.</h2>
+              <p>Please try again in a moment.</p>
+              <button type="button" class="btn btn--sm" (click)="retry()">Try again</button>
+            </div>
+          }
+          @case ('results') {
+            @if (view.result.kind === 'results' && view.result.listings.length) {
+              <h2 id="results-title" class="finder__count">
+                {{ view.result.listings.length }} {{ view.result.listings.length === 1 ? 'retailer' : 'retailers' }}
+                @if (view.query.location) {
+                  near “{{ view.query.location }}”
+                }
+              </h2>
+              <ul role="list" class="finder__list">
+                @for (listing of view.result.listings; track listing.retailer.id) {
+                  <li><app-retailer-card [listing]="listing" /></li>
+                }
+              </ul>
+            } @else {
+              <div class="state-block">
+                <h2 id="results-title">No retailers found.</h2>
+                <p>
+                  We didn’t find a retailer
+                  @if (selectedStrain(); as s) {
+                    reporting {{ s.name }}
+                  }
+                  near that location. Try a nearby city or ZIP code, or search all strains.
+                </p>
+              </div>
+            }
+          }
+        }
+      }
+    </section>
+
+    @if (mapProvider) {
+      <!-- Map integration mounts here when a provider is configured; the list above works without it. -->
+      <aside class="finder__map" aria-label="Map of retailers"></aside>
+    }
+  </div>
+</div>

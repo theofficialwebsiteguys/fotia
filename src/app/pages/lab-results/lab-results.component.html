@@ -1,0 +1,132 @@
+<header class="page-intro container">
+  <p class="eyebrow">Lab results</p>
+  <h1 class="title-page">Know your flower.</h1>
+  <p class="lead">Find a certificate of analysis by strain or batch.</p>
+</header>
+
+<div class="container lab">
+  <form class="lab__form panel" action="lab-results" method="get" role="search" (submit)="submit($event, q.value)">
+    <div class="field">
+      <label class="field__label" for="coa-query">Strain or batch number</label>
+      <div class="input-wrap">
+        <input
+          #q
+          id="coa-query"
+          name="q"
+          class="input"
+          type="search"
+          placeholder="Search strain or batch number"
+          autocomplete="off"
+          aria-describedby="coa-query-hint"
+          [value]="params().q"
+        />
+        <app-icon name="search" />
+      </div>
+    </div>
+    @if (strainsWithBatches().length > 1) {
+      <div class="field">
+        <label class="field__label" for="coa-strain">Strain</label>
+        <select #strain id="coa-strain" name="strain" class="select" (change)="onStrainChange(strain.value)">
+          <option value="" [selected]="!params().strain" [attr.selected]="!params().strain ? '' : null">All strains</option>
+          @for (s of strainsWithBatches(); track s.slug) {
+            <option [value]="s.slug" [selected]="s.slug === params().strain" [attr.selected]="s.slug === params().strain ? '' : null">{{ s.name }}</option>
+          }
+        </select>
+      </div>
+    }
+    <button class="btn btn--primary" type="submit">
+      Find COA
+      <app-icon name="arrow-right" />
+    </button>
+    <p id="coa-query-hint" class="field__hint lab__hint">Batch numbers are usually printed on the package label.</p>
+  </form>
+
+  @if (hasDemo()) {
+    <p class="notice">
+      <strong>Demo content.</strong> These batches are placeholders. No certificates have been published yet, so each
+      one shows “COA not yet available”.
+    </p>
+  }
+
+  <section aria-labelledby="results-title">
+    @let state = catalog();
+    @if (state.status === 'loading') {
+      <h2 id="results-title" class="visually-hidden">Loading lab results</h2>
+      <div class="skeleton lab__skeleton" aria-hidden="true"></div>
+    } @else if (state.status === 'error') {
+      <div class="state-block" role="alert">
+        <h2 id="results-title">Lab results couldn’t be loaded.</h2>
+        <p>Please refresh the page or try again in a moment.</p>
+      </div>
+    } @else {
+      <div class="lab__summary">
+        <h2 id="results-title" class="lab__title" aria-live="polite">
+          @if (params().q) {
+            {{ results().length }} {{ results().length === 1 ? 'result' : 'results' }} for “{{ params().q }}”
+          } @else if (filtered()) {
+            {{ results().length }} {{ results().length === 1 ? 'batch' : 'batches' }}
+          } @else {
+            All batches
+          }
+        </h2>
+        @if (filtered()) {
+          <button type="button" class="text-link" (click)="clear()">Clear search</button>
+        }
+      </div>
+
+      @if (results().length) {
+        <ul role="list" class="results">
+          @for (match of results(); track match.strain.slug + match.batch.id) {
+            <li class="result" [class.is-exact]="match.exactBatch">
+              <div class="result__head">
+                <h3 class="result__strain">
+                  <a [routerLink]="['/strains', match.strain.slug]" [queryParams]="{ batch: match.batch.id }" fragment="coa">
+                    {{ match.strain.name }}
+                  </a>
+                </h3>
+                @if (match.exactBatch) {
+                  <span class="badge badge--gold">Batch match</span>
+                }
+                @if (match.strain.demo) {
+                  <span class="badge">Demo</span>
+                }
+              </div>
+              <dl class="facts result__facts">
+                <div>
+                  <dt>Batch</dt>
+                  <dd class="batch-id">{{ match.batch.id }}</dd>
+                </div>
+                @if (match.batch.testDate) {
+                  <div>
+                    <dt>Tested</dt>
+                    <dd>
+                      <time [attr.datetime]="match.batch.testDate">{{ match.batch.testDate | date: 'MMM d, y' : 'UTC' }}</time>
+                    </dd>
+                  </div>
+                }
+                @if (match.batch.labName) {
+                  <div>
+                    <dt>Laboratory</dt>
+                    <dd>{{ match.batch.labName }}</dd>
+                  </div>
+                }
+              </dl>
+              <app-coa-actions class="result__actions" [strain]="match.strain" [batch]="match.batch" />
+            </li>
+          }
+        </ul>
+      } @else if (state.value.length) {
+        <div class="state-block">
+          <p>
+            No batches match. Check the batch number on your package and try again, or browse by strain.
+          </p>
+          <button type="button" class="btn btn--sm" (click)="clear()">Show all batches</button>
+        </div>
+      } @else {
+        <div class="state-block">
+          <p>Lab results will appear here as batches are published.</p>
+        </div>
+      }
+    }
+  </section>
+</div>

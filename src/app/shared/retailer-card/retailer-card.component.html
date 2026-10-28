@@ -1,0 +1,49 @@
+@let r = retailer();
+<article class="retailer">
+  <div class="retailer__head">
+    <h3 class="retailer__name">{{ r.name }}</h3>
+    @if (listing().distance; as d) {
+      <span class="retailer__distance">{{ d.value | number: '1.0-1' }} {{ d.unit }} away</span>
+    }
+  </div>
+
+  <address class="retailer__address">
+    {{ r.address.line1 }}<br />
+    @if (r.address.line2) {
+      {{ r.address.line2 }}<br />
+    }
+    {{ r.address.city }}, {{ r.address.region }} {{ r.address.postalCode }}
+  </address>
+
+  <div class="retailer__links">
+    <a class="text-link" [href]="directions()" target="_blank" rel="noopener">
+      Directions<span class="visually-hidden"> to {{ r.name }} (opens in a new tab)</span>
+      <app-icon name="arrow-up-right" [size]="16" />
+    </a>
+    @if (r.phone) {
+      <a class="text-link" [href]="'tel:' + r.phone">Call<span class="visually-hidden"> {{ r.name }}</span></a>
+    }
+    @if (r.website) {
+      <a class="text-link" [href]="r.website" target="_blank" rel="noopener">
+        Website<span class="visually-hidden"> for {{ r.name }} (opens in a new tab)</span>
+      </a>
+    }
+  </div>
+
+  <h4 class="retailer__subhead">Fotia strains reported here</h4>
+  @if (listing().strains.length) {
+    <ul role="list" class="retailer__strains">
+      @for (item of listing().strains; track item.strainSlug + (item.packageSize ?? '')) {
+        <li>
+          <a [routerLink]="['/strains', item.strainSlug]">{{ item.strainName }}</a>
+          @if (item.packageSize) {
+            <span class="muted">{{ item.packageSize }}</span>
+          }
+          <app-inventory-status [state]="item.inventory" />
+        </li>
+      }
+    </ul>
+  } @else {
+    <p class="muted">This retailer hasn’t reported any Fotia strains.</p>
+  }
+</article>

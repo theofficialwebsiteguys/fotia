@@ -1,0 +1,71 @@
+.retailer {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+}
+
+.retailer__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+}
+
+.retailer__name {
+  font-family: var(--font-sans);
+  font-size: 1.1875rem;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.retailer__distance {
+  color: var(--color-gold);
+  font-size: 0.875rem;
+}
+
+.retailer__address {
+  color: var(--color-text-muted);
+  font-style: normal;
+}
+
+.retailer__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1.5rem;
+}
+
+.retailer__subhead {
+  margin-top: 0.5rem;
+  color: var(--color-text-subtle);
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.retailer__strains {
+  display: grid;
+
+  li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 1rem;
+    padding-block: 0.75rem;
+    border-top: 1px solid var(--color-line);
+  }
+
+  a {
+    color: var(--color-text);
+    font-weight: 600;
+  }
+
+  app-inventory-status {
+    margin-left: auto;
+  }
+}

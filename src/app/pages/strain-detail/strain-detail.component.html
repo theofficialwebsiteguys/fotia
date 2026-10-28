@@ -1,0 +1,190 @@
+@if (strain(); as s) {
+  <div class="container detail">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <ol role="list">
+        <li><a routerLink="/strains">Strains</a></li>
+        <li aria-current="page">{{ s.name }}</li>
+      </ol>
+    </nav>
+
+    <div class="detail__top">
+      <app-strain-photo
+        class="detail__photo"
+        [photo]="s.photo"
+        ratio="portrait"
+        [priority]="true"
+        sizes="(min-width: 860px) 45vw, 100vw"
+      />
+
+      <div class="detail__info">
+        @if (s.classification) {
+          <p class="eyebrow">{{ s.classification }}</p>
+        }
+        <div class="detail__title">
+          <h1 class="title-page">{{ s.name }}</h1>
+          @if (s.demo) {
+            <span class="badge">Demo</span>
+          }
+        </div>
+        <p class="lead">{{ s.description ?? s.summary }}</p>
+
+        @if (s.genetics || s.aroma?.length || s.flavor?.length) {
+          <dl class="facts">
+            @if (s.genetics) {
+              <div>
+                <dt>Genetics</dt>
+                <dd>{{ s.genetics }}</dd>
+              </div>
+            }
+            @if (s.aroma?.length) {
+              <div>
+                <dt>Aroma</dt>
+                <dd>{{ s.aroma?.join(', ') }}</dd>
+              </div>
+            }
+            @if (s.flavor?.length) {
+              <div>
+                <dt>Flavor</dt>
+                <dd>{{ s.flavor?.join(', ') }}</dd>
+              </div>
+            }
+          </dl>
+        }
+
+        <div class="detail__actions">
+          <a class="btn btn--primary" routerLink="/find-fotia" [queryParams]="{ strain: s.slug }">
+            Find This Strain
+            <app-icon name="arrow-right" />
+          </a>
+          <a class="btn" [routerLink]="[]" [queryParams]="batchQuery()" fragment="coa">View COA</a>
+        </div>
+      </div>
+    </div>
+
+    <section id="coa" class="detail__section" tabindex="-1" aria-labelledby="lab-title">
+      <div class="section-intro">
+        <p class="eyebrow">Lab results</p>
+        <h2 id="lab-title" class="title-sub">Certificate of analysis</h2>
+      </div>
+
+      @if (s.batches.length === 0) {
+        <p class="notice"><strong>COA not yet available.</strong> No batches of {{ s.name }} have been published yet.</p>
+      } @else {
+        @if (batchNotFound()) {
+          <p class="notice" role="alert">
+            We couldn’t find batch <strong class="batch-id">{{ requestedBatch() }}</strong> for {{ s.name }}, so the
+            latest batch is shown.
+            <a routerLink="/lab-results" [queryParams]="{ q: requestedBatch() }">Search all lab results</a>
+          </p>
+        }
+
+        @if (batch(); as b) {
+          <div class="lab panel">
+            <div class="lab__batch">
+              <app-batch-selector [batches]="s.batches" [selectedId]="b.id" (selectedIdChange)="selectBatch($event)" />
+              <dl class="facts">
+                @if (s.batches.length === 1) {
+                  <div>
+                    <dt>Batch</dt>
+                    <dd class="batch-id">{{ b.id }}</dd>
+                  </div>
+                }
+                @if (b.testDate) {
+                  <div>
+                    <dt>Tested</dt>
+                    <dd>
+                      <time [attr.datetime]="b.testDate">{{ b.testDate | date: 'MMM d, y' : 'UTC' }}</time>
+                    </dd>
+                  </div>
+                }
+                @if (b.labName) {
+                  <div>
+                    <dt>Laboratory</dt>
+                    <dd>{{ b.labName }}</dd>
+                  </div>
+                }
+              </dl>
+              <app-coa-actions [strain]="s" [batch]="b" />
+            </div>
+
+            <div class="lab__results">
+              @for (group of resultGroups(); track group.title) {
+                <table class="data-table">
+                  <caption>{{ group.title }} · batch {{ b.id }}</caption>
+                  <thead class="visually-hidden">
+                    <tr>
+                      <th scope="col">Analyte</th>
+                      <th scope="col">Result</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (row of group.rows; track row.analyte) {
+                      <tr>
+                        <th scope="row">{{ row.analyte }}</th>
+                        <td>{{ row.value | number: '1.0-3' }}{{ row.unit === '%' ? '%' : ' ' + row.unit }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              } @empty {
+                <p class="muted">Summary results for this batch haven’t been published. When available, the COA is the complete record.</p>
+              }
+              <p class="lab__note">
+                Results apply to batch <span class="batch-id">{{ b.id }}</span> only. Check the batch number printed on
+                your package.
+              </p>
+            </div>
+          </div>
+        }
+      }
+    </section>
+
+    <section class="detail__section" aria-labelledby="availability-title">
+      <div class="section-intro">
+        <p class="eyebrow">Availability</p>
+        <h2 id="availability-title" class="title-sub">Where to find it</h2>
+      </div>
+
+      <div class="availability panel">
+        @let a = availability();
+        @if (a.kind === 'reported') {
+          <p class="metric">
+            <span class="metric__value">{{ a.retailersInStock }}</span>
+            <span class="metric__label">Retailers reporting {{ s.name }} in stock</span>
+          </p>
+          @if (a.updatedAt) {
+            <p class="muted">Updated <time [attr.datetime]="a.updatedAt">{{ a.updatedAt | date: 'MMM d, h:mm a' }}</time></p>
+          }
+        } @else {
+          @if (availabilityStatus(); as status) {
+            <app-inventory-status [state]="status" />
+          }
+          @if (a.kind === 'not-connected') {
+            <p class="muted">
+              We can’t show which stores carry {{ s.name }} until retailer listings are connected. Unknown availability
+              doesn’t mean it’s sold out.
+            </p>
+          }
+        }
+        <a class="btn btn--sm" routerLink="/find-fotia" [queryParams]="{ strain: s.slug }">Find This Strain</a>
+      </div>
+    </section>
+  </div>
+
+  <div class="sticky-actions">
+    <a class="btn btn--primary btn--sm" routerLink="/find-fotia" [queryParams]="{ strain: s.slug }">Find This Strain</a>
+    <a class="btn btn--sm" [routerLink]="[]" [queryParams]="batchQuery()" fragment="coa">View COA</a>
+  </div>
+} @else {
+  <section class="page-intro container">
+    <p class="eyebrow">Strains</p>
+    <h1 class="title-page">We couldn’t find that strain.</h1>
+    <p class="lead">The link may be out of date. Browse every strain, or look up a COA by batch number.</p>
+    <div class="not-found-actions">
+      <a class="btn btn--primary" routerLink="/strains">Browse strains</a>
+      <a class="btn" routerLink="/lab-results" [queryParams]="requestedBatch() ? { q: requestedBatch() } : {}">
+        Search lab results
+      </a>
+    </div>
+  </section>
+}

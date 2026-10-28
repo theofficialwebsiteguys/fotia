@@ -1,0 +1,36 @@
+<article class="card">
+  <a class="card__media" [routerLink]="link()" tabindex="-1" aria-hidden="true">
+    <app-strain-photo [photo]="strain().photo" />
+  </a>
+
+  <div class="card__body">
+    <div class="card__heading">
+      @if (headingLevel() === 2) {
+        <h2 class="card__title">{{ strain().name }}</h2>
+      } @else {
+        <h3 class="card__title">{{ strain().name }}</h3>
+      }
+      @if (strain().demo) {
+        <span class="badge">Demo</span>
+      }
+    </div>
+    @if (meta()) {
+      <p class="card__meta">{{ meta() }}</p>
+    }
+    <p class="card__summary">{{ strain().summary }}</p>
+
+    <div class="card__actions">
+      <a class="btn btn--primary btn--sm" [routerLink]="link()">
+        Explore Strain<span class="visually-hidden">: {{ strain().name }}</span>
+        <app-icon name="arrow-right" [size]="16" />
+      </a>
+      <a class="btn btn--sm" routerLink="/find-fotia" [queryParams]="{ strain: strain().slug }">
+        Find This Strain<span class="visually-hidden">: {{ strain().name }}</span>
+      </a>
+    </div>
+    <a class="text-link card__coa" [routerLink]="link()" [queryParams]="coaQuery()" fragment="coa">
+      View COA<span class="visually-hidden"> for {{ strain().name }}</span>
+      <app-icon name="arrow-right" [size]="16" />
+    </a>
+  </div>
+</article>

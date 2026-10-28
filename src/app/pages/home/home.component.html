@@ -1,0 +1,109 @@
+<app-home-hero />
+
+<section class="section featured" aria-labelledby="featured-title">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">{{ allDemo() ? 'Concept strain placeholders' : 'The strains' }}</p>
+        <h2 id="featured-title" class="title-section">The flower.</h2>
+      </div>
+      <div class="section-head__aside">
+        <p>Premium indoor flower. Explore each strain, find it near you, and check the lab results for your batch.</p>
+        <a class="text-link" routerLink="/strains">
+          All strains
+          <app-icon name="arrow-right" [size]="16" />
+        </a>
+      </div>
+    </div>
+
+    @let state = featured();
+    @if (state.status === 'loading') {
+      <div class="card-grid" aria-busy="true">
+        @for (i of [1, 2, 3]; track i) {
+          <div class="skeleton skeleton-card"></div>
+        }
+      </div>
+    } @else if (state.status === 'error') {
+      <p class="notice">Strains couldn’t be loaded right now. <a routerLink="/strains">Try the strain directory</a>.</p>
+    } @else if (state.value.length) {
+      <ul role="list" class="card-grid">
+        @for (strain of state.value; track strain.slug) {
+          <li><app-strain-card [strain]="strain" /></li>
+        }
+      </ul>
+    } @else {
+      <p class="notice">Strains will be announced soon.</p>
+    }
+  </div>
+</section>
+
+<section class="task" aria-labelledby="find-title">
+  <div class="container task__inner">
+    <div class="task__copy">
+      <p class="eyebrow">Find Fotia</p>
+      <h2 id="find-title" class="title-sub">Find Fotia near you.</h2>
+      <p>Search by city or ZIP code to see which retailers carry Fotia.</p>
+    </div>
+    <form class="search-form" action="find-fotia" method="get" (submit)="findRetailers($event, location.value)">
+      <div class="field">
+        <label class="field__label" for="home-location">City or ZIP code</label>
+        <div class="input-wrap">
+          <input #location id="home-location" name="location" class="input" type="text" placeholder="Enter a city or ZIP code" />
+          <app-icon name="location" />
+        </div>
+      </div>
+      <button class="btn btn--primary" type="submit">
+        Find Fotia
+        <app-icon name="arrow-right" />
+      </button>
+    </form>
+  </div>
+</section>
+
+<section class="task" aria-labelledby="lab-title">
+  <div class="container task__inner">
+    <div class="task__copy">
+      <p class="eyebrow">Lab results</p>
+      <h2 id="lab-title" class="title-sub">Know your flower.</h2>
+      <p>Find a certificate of analysis by strain or batch.</p>
+    </div>
+    <div class="task__form">
+      <form class="search-form" action="lab-results" method="get" role="search" (submit)="findCoa($event, coaQuery.value)">
+        <div class="field">
+          <label class="field__label" for="home-coa">Strain or batch number</label>
+          <div class="input-wrap">
+            <input #coaQuery id="home-coa" name="q" class="input" type="search" placeholder="Search strain or batch number" />
+            <app-icon name="search" />
+          </div>
+        </div>
+        <button class="btn btn--primary" type="submit">
+          Find COA
+          <app-icon name="arrow-right" />
+        </button>
+      </form>
+      <a class="text-link" routerLink="/lab-results">
+        Browse all lab results
+        <app-icon name="arrow-right" [size]="16" />
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="section story" aria-labelledby="story-title">
+  <div class="container story__inner">
+    <picture>
+      <source type="image/webp" [attr.srcset]="flame.srcWebp" />
+      <img [src]="flame.src" [width]="flame.width" [height]="flame.height" alt="" loading="lazy" />
+    </picture>
+    <p class="eyebrow">Our story</p>
+    <h2 id="story-title" class="story__title">Named for fire.</h2>
+    <p class="story__text">
+      Fotia — φωτιά — is Greek for fire. In the old myths, fire belonged to the gods before it ever reached human
+      hands. That is the spirit behind our name, and behind three words: Fire of the Gods.
+    </p>
+    <a class="text-link" routerLink="/our-story">
+      Read our story
+      <app-icon name="arrow-right" [size]="16" />
+    </a>
+  </div>
+</section>

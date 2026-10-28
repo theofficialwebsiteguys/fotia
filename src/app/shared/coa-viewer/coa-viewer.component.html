@@ -1,0 +1,57 @@
+<dialog #dialog class="viewer" aria-labelledby="coa-viewer-title" (close)="onClosed()">
+  @if (request(); as r) {
+    <header class="viewer__head">
+      <div class="viewer__heading">
+        <p class="eyebrow">Certificate of analysis</p>
+        <h2 id="coa-viewer-title" class="viewer__title">
+          {{ r.strainName }} <span class="batch-id">· Batch {{ r.batchId }}</span>
+        </h2>
+        @if (r.testDate || r.labName) {
+          <p class="viewer__meta">
+            @if (r.testDate) {
+              Tested {{ r.testDate | date: 'MMM d, y' : 'UTC' }}
+            }
+            @if (r.testDate && r.labName) {
+              ·
+            }
+            @if (r.labName) {
+              {{ r.labName }}
+            }
+          </p>
+        }
+      </div>
+      <div class="viewer__actions">
+        <a class="btn btn--sm" [href]="r.url" target="_blank" rel="noopener">
+          Open in new tab
+          <app-icon name="arrow-up-right" [size]="16" />
+        </a>
+        <app-download-button [url]="r.url" [downloadUrl]="r.downloadUrl" [fileName]="r.fileName" />
+        <button type="button" class="viewer__close" autofocus (click)="close()">
+          <app-icon name="close" [size]="22" />
+          <span class="visually-hidden">Close document</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="viewer__body">
+      @switch (availability()) {
+        @case ('checking') {
+          <p class="viewer__state" role="status">Loading document…</p>
+        }
+        @case ('missing') {
+          <div class="viewer__state state-block" role="alert">
+            <h3>This COA file is unavailable.</h3>
+            <p>We couldn’t load the certificate for batch {{ r.batchId }}. Please try again later.</p>
+          </div>
+        }
+        @default {
+          <iframe [src]="frameUrl()" [title]="'COA PDF for ' + r.strainName + ', batch ' + r.batchId"></iframe>
+        }
+      }
+    </div>
+    <p class="viewer__fallback">
+      Document not showing?
+      <a [href]="r.url" target="_blank" rel="noopener">Open the PDF in a new tab</a>.
+    </p>
+  }
+</dialog>

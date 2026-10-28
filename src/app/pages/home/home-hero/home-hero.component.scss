@@ -1,0 +1,158 @@
+@use 'breakpoints' as bp;
+
+// The pouch sits at roughly x 59–81% and y 16–73% of the combined image.
+// Every frame below keeps that whole area, and the platform beneath it, visible.
+
+.hero {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  // Mobile: the copy sits above the artwork under the same top light.
+  background:
+    radial-gradient(70% 60% at 10% 0%, rgb(226 226 232 / 0.12), transparent 70%),
+    radial-gradient(60% 55% at 95% 0%, rgb(217 183 95 / 0.14), transparent 72%),
+    var(--color-bg);
+
+  @include bp.up(md) {
+    justify-content: center;
+    // Height follows the image's own 16:9 composition, within sensible bounds.
+    height: clamp(560px, 56.28vw, 1080px);
+    background: var(--color-bg);
+  }
+}
+
+.hero__content {
+  position: relative;
+  z-index: 1;
+  padding-top: calc(var(--header-h) + 2.25rem);
+
+  @include bp.up(md) {
+    padding-top: calc(var(--header-h) * 0.6);
+  }
+}
+
+.hero__copy {
+  display: grid;
+  justify-items: start;
+
+  @include bp.up(md) {
+    // Clear of the pouch at every desktop width.
+    max-width: min(46rem, 50vw);
+  }
+}
+
+.hero__title {
+  margin-top: 1.25rem;
+  color: var(--color-text);
+
+  span {
+    display: block;
+  }
+}
+
+.hero__lead {
+  margin-top: 1.25rem;
+  color: var(--color-text);
+  font-size: clamp(1.125rem, 1rem + 0.6vw, 1.5rem);
+  line-height: 1.4;
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  margin-top: 2rem;
+
+  @include bp.down(sm) {
+    display: grid;
+    width: 100%;
+  }
+
+  @include bp.up(md) {
+    margin-top: 2.5rem;
+
+    .btn {
+      min-height: 3.25rem;
+      padding-inline: 1.75rem;
+    }
+  }
+}
+
+.hero__link {
+  margin-top: 0.75rem;
+}
+
+.hero__media {
+  position: relative;
+  aspect-ratio: 1;
+  margin-top: -1.5rem;
+
+  @include bp.up(sm) {
+    aspect-ratio: 4 / 3;
+  }
+
+  picture {
+    height: 100%;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    // Frame the pouch, not the centre of the image.
+    object-position: 95% 50%;
+  }
+
+  // Top fade joins the artwork to the copy; bottom fade joins it to the page.
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    pointer-events: none;
+  }
+
+  &::before {
+    top: 0;
+    height: 28%;
+    background: linear-gradient(to bottom, var(--color-bg), rgb(0 0 0 / 0));
+  }
+
+  &::after {
+    bottom: 0;
+    height: 26%;
+    background: linear-gradient(to top, var(--color-bg), rgb(0 0 0 / 0.55) 45%, rgb(0 0 0 / 0));
+  }
+
+  @include bp.up(md) {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    aspect-ratio: auto;
+    margin: 0;
+
+    img {
+      object-position: 70% 30%;
+    }
+
+    // A local shade behind the copy only; the lit right side stays untouched.
+    &::before {
+      inset: 0 auto 0 0;
+      width: 62%;
+      height: auto;
+      background: linear-gradient(90deg, rgb(0 0 0 / 0.5) 0%, rgb(0 0 0 / 0.22) 55%, rgb(0 0 0 / 0));
+    }
+
+    &::after {
+      height: 30%;
+      background: linear-gradient(
+        to top,
+        var(--color-bg) 0%,
+        rgb(0 0 0 / 0.72) 30%,
+        rgb(0 0 0 / 0.28) 65%,
+        rgb(0 0 0 / 0) 100%
+      );
+    }
+  }
+}

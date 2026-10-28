@@ -1,0 +1,104 @@
+@use 'breakpoints' as bp;
+
+.field {
+  display: grid;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.field__label {
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.field__hint {
+  color: var(--color-text-subtle);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.input,
+.select {
+  width: 100%;
+  min-height: 3.25rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-sm);
+  background-color: rgb(16 16 16 / 0.9);
+  color: var(--color-text);
+  font-size: 1rem;
+  transition: border-color var(--duration) var(--ease);
+
+  &::placeholder {
+    color: var(--color-text-subtle);
+  }
+
+  &:hover {
+    border-color: rgb(244 240 232 / 0.4);
+  }
+
+  &:focus-visible {
+    border-color: var(--color-gold);
+    outline-offset: 2px;
+  }
+}
+
+.input[type='search'] {
+  appearance: none;
+}
+
+.select {
+  appearance: none;
+  padding-right: 2.75rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23D9B75F' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-position: right 1rem center;
+  background-repeat: no-repeat;
+  background-size: 12px 8px;
+
+  option {
+    background: var(--color-surface);
+    color: var(--color-text);
+  }
+}
+
+// An input with a decorative icon on its trailing edge.
+.input-wrap {
+  position: relative;
+
+  .input {
+    padding-right: 2.75rem;
+  }
+
+  .icon {
+    position: absolute;
+    top: 50%;
+    right: 1rem;
+    color: var(--color-text-subtle);
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+}
+
+.search-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.75rem;
+
+  .field {
+    flex: 1 1 15rem;
+  }
+
+  > .btn {
+    min-height: 3.25rem;
+  }
+
+  @include bp.down(sm) {
+    > .btn {
+      width: 100%;
+    }
+  }
+}

@@ -1,0 +1,43 @@
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero__content container">
+    <div class="hero__copy">
+      <p class="eyebrow">Fotia · Premium indoor flower</p>
+      <h1 id="hero-title" class="display hero__title">
+        <span>Fire of </span><span>the Gods.</span>
+      </h1>
+      <p class="hero__lead">Rooted in myth. Grown with purpose.</p>
+      <div class="hero__actions">
+        <a class="btn btn--primary" routerLink="/strains">
+          Explore Strains
+          <app-icon name="arrow-right" />
+        </a>
+        <a class="btn" routerLink="/find-fotia">
+          Find Fotia
+          <app-icon name="arrow-right" />
+        </a>
+      </div>
+      <a class="text-link hero__link" routerLink="/lab-results">
+        View Lab Results
+        <app-icon name="arrow-right" [size]="16" />
+      </a>
+    </div>
+  </div>
+
+  <!-- One image for every layout: the frame changes, the file doesn't. -->
+  <div class="hero__media">
+    <picture>
+      <source type="image/avif" [attr.srcset]="hero.srcsetAvif" [attr.sizes]="sizes" />
+      <source type="image/webp" [attr.srcset]="hero.srcsetWebp" [attr.sizes]="sizes" />
+      <img
+        [src]="hero.src"
+        [attr.srcset]="hero.srcsetJpg"
+        [attr.sizes]="sizes"
+        [width]="hero.width"
+        [height]="hero.height"
+        [alt]="hero.alt"
+        loading="eager"
+        fetchpriority="high"
+      />
+    </picture>
+  </div>
+</section>

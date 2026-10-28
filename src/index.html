@@ -2,10 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Fotia</title>
+  <title>Fotia · Fire of the Gods</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <meta name="description" content="Fotia premium indoor cannabis flower. Explore our strains, find Fotia at a retailer, and view the certificate of analysis for your batch.">
+  <meta name="theme-color" content="#000000">
+  <meta name="color-scheme" content="dark">
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/web/brand/favicon-32.png">
+  <link rel="apple-touch-icon" href="assets/web/brand/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap">
+  <script>
+    // Hide the 21+ gate before first paint for visitors who already confirmed.
+    // Key and class must match core/browser/age-verification.service.ts.
+    try {
+      var ageRecord = JSON.parse(localStorage.getItem('fotia.ageVerified') || 'null');
+      if (ageRecord && ageRecord.expires > Date.now()) document.documentElement.classList.add('age-verified');
+    } catch (e) {}
+  </script>
 </head>
 <body>
   <app-root></app-root>
