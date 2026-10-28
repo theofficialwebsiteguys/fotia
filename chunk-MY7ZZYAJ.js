@@ -1,0 +1,1 @@
+import{e as r,r as i,x as n}from"./chunk-RZINGRBU.js";var a=class{},o=class t extends a{connected=!1;strainAvailability(){return r({kind:"not-connected"})}static \u0275fac=(()=>{let e;return function(l){return(e||(e=n(t)))(l||t)}})();static \u0275prov=i({token:t,factory:t.\u0275fac})};export{a,o as b};
